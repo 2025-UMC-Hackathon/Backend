@@ -150,4 +150,50 @@ public class PostService {
         LocalDateTime now = LocalDateTime.now();
         return PostConverter.toCreatePostDTO(post, now);
     }
+
+    // 내가 좋아요 누른 게시글 조회
+    public PostResDTO.PageablePost<PostResDTO.FullPost> getMyLikePost(
+            AuthUser user,
+            String cursor,
+            int size
+    ){
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QPost post = QPost.post;
+        QUserLike userLike = QUserLike.userLike;
+
+        builder.and(userLike.user.id.eq(user.getUserId()))
+                .and(userLike.isLike.eq(PostLike.LIKE));
+
+        if (!cursor.equals("-1")) {
+            try {
+                builder.and(post.id.loe(Long.parseLong(cursor)));
+            } catch (NumberFormatException e){
+                throw new PostException(PostErrorCode.NOT_VALID_CURSOR);
+            }
+        }
+
+        return postRepository.getMyLikePost(builder, size);
+    }
+
+    public PostResDTO.PageablePost<PostResDTO.FullPost> getMyPosts(
+            AuthUser user,
+            String cursor,
+            int size
+    ) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QPost post = QPost.post;
+
+        builder.and(post.user.id.eq(user.getUserId()));
+        if (!cursor.equals("-1")) {
+            try {
+                builder.and(post.id.loe(Long.parseLong(cursor)));
+            } catch (NumberFormatException e){
+                throw new PostException(PostErrorCode.NOT_VALID_CURSOR);
+            }
+        }
+
+        return postRepository.getMyPosts(builder, size);
+    }
 }
