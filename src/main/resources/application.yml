@@ -4,10 +4,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC ???? ??? ??
-    url: ${DB_URL} #?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ${DB_USER}
-    password: ${DB_PW}
-
+    url: jdbc:mysql://localhost:3306/hackathon_backend
+    username: root
+    password: 1234
   jpa:
     database: mysql # ??? ?????? ?? ?? (MySQL)
     database-platform: org.hibernate.dialect.MySQLDialect # Hibernate?? ??? MySQL ??(dialect) ??
@@ -18,3 +17,8 @@ spring:
       hibernate:
         format_sql: true # ???? SQL ??? ?? ?? ???
         default_batch_fetch_size: 1000
+
+perplexity:
+  api:
+    url: https://api.perplexity.ai/chat/completions
+    key: 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
