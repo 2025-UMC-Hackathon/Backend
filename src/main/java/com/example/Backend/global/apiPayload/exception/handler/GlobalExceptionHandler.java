@@ -1,6 +1,5 @@
 package com.example.Backend.global.apiPayload.exception.handler;
 
-import com.example.Backend.domain.exception.CommentException;
 import com.example.Backend.domain.exception.code.CommentErrorCode;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.apiPayload.exception.CustomException;
@@ -10,7 +9,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,7 +50,7 @@ public class GlobalExceptionHandler {
     ) {
         Map<String, String> errors = new HashMap<>();
         ex.getParameterValidationResults().forEach(result ->
-                errors.put(result.getMethodParameter().getParameterName(), result.getResolvableErrors().get(0).getDefaultMessage()));
+                errors.put(result.getMethodParameter().getParameterName(), result.getResolvableErrors().getFirst().getDefaultMessage()));
         BaseErrorCode validationErrorCode = GeneralErrorCode.VALIDATION_FAILED; // BaseErrorCode로 통일
         CustomResponse<Map<String, String>> errorResponse = CustomResponse.onFailure(
                 validationErrorCode,
@@ -122,25 +120,6 @@ public class GlobalExceptionHandler {
                         )
                 );
     }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    protected ResponseEntity<CustomResponse<String>> handleHttpMessageNotReadableException(
-            HttpMessageNotReadableException ex
-    ) {
-        log.warn("[ HttpMessageNotReadableException ]: {}", ex.getMessage());
-
-        // 커스텀 메시지 설정 (enum 파싱 실패 메시지를 포함할 수도 있음)
-        String message = "요청 JSON 형식이 잘못되었습니다. enum 값이 유효한지 확인하세요.";
-
-        // 예: USER400_9 (GeneralErrorCode로 따로 빼도 됩니다)
-        BaseErrorCode errorCode = GeneralErrorCode.VALIDATION_FAILED;
-
-        return ResponseEntity
-                .status(errorCode.getHttpStatus())
-                .body(CustomResponse.onFailure(errorCode, message));
-    }
-
-
 
     // 그 외의 정의되지 않은 모든 예외 처리
     @ExceptionHandler({Exception.class})
