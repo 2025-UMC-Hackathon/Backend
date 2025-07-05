@@ -58,6 +58,27 @@ public class PostController {
     ){
         return CustomResponse.ok(postService.getPostsWithTags(tags, cursor, size));
     }
+
+    // 내가 좋아요 누른 게시글 조회
+    @GetMapping("/me/like-post")
+    @Operation(
+            summary = "내가 좋아요 누른 게시글 조회 by 김주헌",
+            description = "마이페이지에서 좋아요를 누른 게시글을 조회합니다. " +
+                    "커서 기반 페이지네이션, 최신 순으로 정렬합니다."
+    )
+    public CustomResponse<PostResDTO.PageablePost<PostResDTO.FullPost>> getLikedPosts(
+            @AuthenticationPrincipal
+            AuthUser user,
+            @RequestParam(defaultValue = "-1") @NotNull(message = "커서의 기본값은 -1입니다.")
+            @Min(value = -1, message = "커서는 -1 이상이어야 합니다.")
+            String cursor,
+            @RequestParam(defaultValue = "1") @NotNull(message = "조회할 데이터 사이즈를 요청해야 합니다.")
+            @Min(value = 1, message = "게시글은 최소 하나 이상 조회해야 합니다.")
+            int size
+    ) {
+
+        return CustomResponse.ok(postService.getMyLikePost(user, cursor, size));
+    }
     // POST
     // 게시글 생성
     @Operation(
@@ -75,7 +96,7 @@ public class PostController {
     // 게시글 좋아요
     @Operation(
             summary = "게시글 좋아요 By 김주헌",
-            description = "게시글에 좋아요를 표기합니다."
+            description = "게시글에 좋아요를 표기합니다. 재호출을 통해 좋아요 -> 좋아요 취소 할 수 있습니다."
     )
     @PostMapping("/post/{postId}/like")
     public CustomResponse<PostResDTO.LikePost> likePost(
@@ -85,4 +106,5 @@ public class PostController {
         return CustomResponse.ok(postService.LikePost(user, postId));
     }
     // DELETE
+    //
 }

@@ -50,6 +50,7 @@ public class PostResDTO {
     // 자세한 게시글
     @Builder
     public record FullPost(
+            Long id,
             String title,
             String content,
             Long likeCnt,
