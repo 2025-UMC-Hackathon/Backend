@@ -34,21 +34,6 @@ public class PostConverter {
                 .build();
     }
 
-    // Post -> 게시글 단일 조회 dto
-    public static PostResDTO.GetPostById getPostById(
-            Post post
-    ){
-        return PostResDTO.GetPostById.builder()
-                .id(post.getId())
-                .nickname(post.getUser().getNickname())
-                .writeDate(post.getCreatedAt().toLocalDate())
-                .writeTime(post.getCreatedAt().toLocalTime())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .likes(post.getLikeCnt())
-                .build();
-    }
-
     // post, offset, pageSize -> PageablePost
     public static <T>PostResDTO.PageablePost<T> toPageablePostDTO(
             List<T> post,

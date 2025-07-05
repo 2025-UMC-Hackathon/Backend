@@ -40,14 +40,16 @@ public class PostService {
     public PostResDTO.GetPostById getPostById(
             Long postId
     ){
-        // 조회하고 리턴
-        return PostConverter.getPostById(postRepository.findPostById(postId).orElseThrow(() ->
-                new PostException(PostErrorCode.NOT_FOUND)));
+        // 조회
+        postRepository.findPostById(postId).orElseThrow(() ->
+                new PostException(PostErrorCode.NOT_FOUND));
+        return postRepository.getPostById(postId);
     }
 
     // 태그와 관련된 게시글 모두 조회 (커서기반 페이지네이션)
     public PostResDTO.PageablePost<PostResDTO.SimplePost> getPostsWithTags(
             List<String> tags,
+            List<String> types,
             String cursor,
             int size
     ){
@@ -57,10 +59,18 @@ public class PostService {
 
         // 태그 정제
         List<Tag> tagList = tagRepository.findByContentIn(tags);
+        List<Tag> typesList = tagRepository.findByContentIn(types);
 
         // 조건 설정
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(postTag.tag.in(tagList));
+        if (!tagList.isEmpty() && !typesList.isEmpty()) {
+            builder.and(postTag.tag.in(tagList))
+                    .or(postTag.tag.in(typesList));
+        } else if (!typesList.isEmpty()){
+            builder.and(postTag.tag.in(typesList));
+        } else if (!tagList.isEmpty()){
+            builder.and(postTag.tag.in(tagList));
+        }
 
         if (!cursor.equals("-1")){
             try {
@@ -125,7 +135,9 @@ public class PostService {
         // 게시글 저장
         Post post = postRepository.save(PostConverter.toPost(dto, user));
 
-        // 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
+        LocalDateTime now = LocalDateTime.now();
+
+        // 고민 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
         List<Tag> foundTags = tagRepository.findByContentIn(dto.tags());
         Map<String, Tag> tagMap = foundTags.stream()
                 .collect(Collectors.toMap(Tag::getContent, Function.identity()));
@@ -146,8 +158,28 @@ public class PostService {
         }
         postTagRepository.saveAll(postTags);
 
+        // 유형 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
+        List<Tag> foundTypes = tagRepository.findByContentIn(dto.types());
+        Map<String, Tag> typeMap = foundTypes.stream()
+                .collect(Collectors.toMap(Tag::getContent, Function.identity()));
+
+        List<Tag> types = new ArrayList<>();
+        for (String typeName : dto.types()) {
+            Tag type = typeMap.get(typeName);
+            if (type == null) {
+                type = tagRepository.save(TagConverter.toTag(typeName));
+            }
+            types.add(type);
+        }
+
+        // 게시글 <-> 태그 연동
+        List<PostTag> postTypes = new ArrayList<>();
+        for (Tag tag : types) {
+            postTypes.add(PostTagConverter.toPostTag(post, tag));
+        }
+        postTagRepository.saveAll(postTypes);
+
         // 리턴
-        LocalDateTime now = LocalDateTime.now();
         return PostConverter.toCreatePostDTO(post, now);
     }
 

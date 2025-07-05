@@ -23,6 +23,33 @@ public class PostQueryDslImpl implements PostQueryDsl {
 
     private final JPAQueryFactory queryFactory;
 
+    // 게시글 ID 단일 조회
+    @Override
+    public PostResDTO.GetPostById getPostById(
+            Long postId
+    ){
+        QPost post = QPost.post;
+        QComment comment = QComment.comment;
+
+        return queryFactory
+                .select(
+                        Projections.constructor(
+                                PostResDTO.GetPostById.class,
+                                post.id,
+                                post.user.nickname,
+                                post.updatedAt,
+                                post.title,
+                                post.content,
+                                post.likeCnt,
+                                comment.count()
+                        )
+                )
+                .from(post)
+                .leftJoin(comment).on(comment.post.id.eq(post.id))
+                .where(post.id.eq(postId))
+                .fetchOne();
+    }
+
     // 태그 관련된 게시글 모두 조회 (오프셋 페이지네이션)
     @Override
     public PostResDTO.PageablePost<PostResDTO.SimplePost> findPostsWithTags(
@@ -31,12 +58,15 @@ public class PostQueryDslImpl implements PostQueryDsl {
     ){
         QPost post = QPost.post;
         QPostTag postTag = QPostTag.postTag;
+        QComment comment = QComment.comment;
 
         // 조건에 맞는 게시글 조회
         List<PostResDTO.SimplePost> postList = queryFactory
                 .from(post)
                 .leftJoin(postTag).on(postTag.post.id.eq(post.id))
+                .leftJoin(comment).on(comment.post.id.eq(post.id))
                 .where(query)
+                .groupBy(post.id)
                 .orderBy(post.id.desc())
                 .transform(GroupBy.groupBy(post.id).list(
                         Projections.constructor(
@@ -45,7 +75,8 @@ public class PostQueryDslImpl implements PostQueryDsl {
                                 post.title,
                                 post.content,
                                 post.createdAt,
-                                post.user.nickname
+                                post.user.nickname,
+                                comment.count()
                         )
                 ));
 

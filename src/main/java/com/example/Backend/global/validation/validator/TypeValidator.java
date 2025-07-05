@@ -1,7 +1,7 @@
 package com.example.Backend.global.validation.validator;
 
-import com.example.Backend.domain.enums.TagCategory;
-import com.example.Backend.global.validation.annotation.TagValidation;
+import com.example.Backend.domain.enums.TypeCategory;
+import com.example.Backend.global.validation.annotation.TypeValid;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class TagValidator implements ConstraintValidator<TagValidation, List<String>> {
+public class TypeValidator implements ConstraintValidator<TypeValid, List<String>> {
 
     @Override
     public boolean isValid(
@@ -23,7 +23,7 @@ public class TagValidator implements ConstraintValidator<TagValidation, List<Str
             return true;
         }
         return object.stream().allMatch(s ->
-                Arrays.stream(TagCategory.values())
+                Arrays.stream(TypeCategory.values())
                         .anyMatch(t -> t.name().equals(s)));
     }
 }

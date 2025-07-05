@@ -3,9 +3,7 @@ package com.example.Backend.domain.dto;
 import com.example.Backend.domain.enums.PostLike;
 import lombok.Builder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 public class PostResDTO {
@@ -22,11 +20,11 @@ public class PostResDTO {
     public record GetPostById(
             Long id,
             String nickname,
-            LocalDate writeDate,
-            LocalTime writeTime,
+            LocalDateTime createdAt,
             String title,
             String content,
-            Long likes
+            Long likes,
+            Long commentCnt
     ){}
 
     // 커서 페이지네이션
@@ -44,7 +42,8 @@ public class PostResDTO {
             String title,
             String content,
             LocalDateTime createdAt,
-            String nickname
+            String nickname,
+            Long commentCnt
     ){}
 
     // 자세한 게시글
