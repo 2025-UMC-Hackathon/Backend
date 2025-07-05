@@ -1,13 +1,15 @@
 package com.example.Backend.domain.service;
 
-import com.example.Backend.domain.dto.CommentRequestDto;
 import com.example.Backend.domain.dto.CommentResponseDto;
 import com.example.Backend.domain.entity.Comment;
 import com.example.Backend.domain.entity.Post;
 import com.example.Backend.domain.entity.User;
+import com.example.Backend.domain.exception.CommentException;
+import com.example.Backend.domain.exception.code.CommentErrorCode;
 import com.example.Backend.domain.repository.CommentRepository;
 import com.example.Backend.domain.repository.PostRepository;
 import com.example.Backend.domain.repository.UserRepository;
+import com.example.Backend.global.auth.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.Backend.domain.exception.code.CommentErrorCode.PARENT_COMMENT_NOT_FOUND;
+import static com.example.Backend.domain.exception.code.PostErrorCode.NOT_FOUND;
+import static com.example.Backend.domain.exception.code.PostErrorCode.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -28,22 +34,35 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void uploadComment(CommentRequestDto requestDto) {
-        Post post = postRepository.findById(requestDto.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+    public void uploadComment(
+            Long postId,
+            Long parentId,
+            AuthUser authUser,
+            String content
+    ) {
 
-        Comment parent = null;
-        if (requestDto.getParentId() != null) {
-            parent = commentRepository.findById(requestDto.getParentId())
-                    .orElseThrow(() -> new IllegalArgumentException("부모 댓글이 존재하지 않습니다."));
+        // 유저 정보 조회
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(() ->
+                new CommentException(CommentErrorCode.USER_NOT_FOUND));
+
+        if (content == null) {
+            throw new CommentException(CommentErrorCode.EMPTY_CONTENT);
         }
 
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new CommentException(NOT_FOUND));
+
+        Comment parent = null;
+        if (parentId != null) {
+            parent = commentRepository.findById(parentId)
+                    .orElseThrow(() -> new CommentException(PARENT_COMMENT_NOT_FOUND));
+        }
+
+        //converter!!
         Comment comment = Comment.builder()
                 .post(post)
                 .user(user)
-                .content(requestDto.getContent())
+                .content(content)
                 .parent(parent)
                 .build();
 
@@ -53,6 +72,11 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentResponseDto> getCommentsByPost(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
+
+
+        if (comments.isEmpty()) {
+            throw new CommentException(CommentErrorCode.COMMENTS_EMPTY);
+        }
 
         // DTO 변환
         List<CommentResponseDto> commentDtos = comments.stream()
@@ -109,8 +133,7 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
-
+                .orElseThrow(() -> new CommentException(CommentErrorCode.COMMENT_NOT_FOUND));
         commentRepository.delete(comment);
     }
 
