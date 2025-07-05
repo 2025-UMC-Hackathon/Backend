@@ -6,14 +6,18 @@ import com.example.Backend.domain.entity.Comment;
 import com.example.Backend.domain.entity.Post;
 import com.example.Backend.domain.entity.User;
 import com.example.Backend.domain.repository.CommentRepository;
+import com.example.Backend.domain.repository.PostRepository;
+import com.example.Backend.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +57,7 @@ public class CommentService {
         // DTO 변환
         List<CommentResponseDto> commentDtos = comments.stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
         // 대댓글 구조화
         Map<Long, CommentResponseDto> map = new HashMap<>();
