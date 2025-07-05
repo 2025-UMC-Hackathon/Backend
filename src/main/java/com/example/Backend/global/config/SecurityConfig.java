@@ -22,6 +22,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/api/signup",
             "/api/login",
+            "/healthcheck",
     };
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) throws Exception {
