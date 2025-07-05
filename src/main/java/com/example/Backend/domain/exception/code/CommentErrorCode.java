@@ -9,20 +9,20 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum CommentErrorCode implements BaseErrorCode {
 
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,
-            "COMMENT404_0",
+    COMMENT_NOT_FOUND(HttpStatus.NOT_ACCEPTABLE,
+            "COMMENT406_0",
             "해당 댓글이 존재하지 않습니다."),
 
-    COMMENTS_EMPTY(HttpStatus.NOT_FOUND,
-            "COMMENT404_1",
+    COMMENTS_EMPTY(HttpStatus.NOT_ACCEPTABLE,
+            "COMMENT406_1",
             "해당 게시글에는 댓글이 존재하지 않습니다."),
 
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND,
-            "COMMENT404_2",
+    USER_NOT_FOUND(HttpStatus.NOT_ACCEPTABLE,
+            "COMMENT406_2",
             "해당 유저가 존재하지 않습니다."),
 
-    PARENT_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,
-            "COMMENT404_3",
+    PARENT_COMMENT_NOT_FOUND(HttpStatus.NOT_ACCEPTABLE,
+            "COMMENT406_3",
             "부모 댓글이 존재하지 않습니다."),
 
     EMPTY_CONTENT(HttpStatus.BAD_REQUEST,
