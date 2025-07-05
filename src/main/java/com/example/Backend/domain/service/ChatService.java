@@ -57,8 +57,8 @@ public class ChatService {
 
         Map<String, Object> choice = (Map<String, Object>) choices.get(0);
         Map<String, String> message = (Map<String, String>) choice.get("message");
-        String answer = message.get("content");
-
+        //String answer = message.get("content");
+        String answer = message.get("content").replace("\n", "<br>");
         return new ChatResponseDto(answer);
     }
 }

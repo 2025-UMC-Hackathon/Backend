@@ -9,4 +9,14 @@ public interface PostQueryDsl {
             Predicate query,
             int size
     );
+
+    PostResDTO.PageablePost<PostResDTO.FullPost> getMyLikePost(
+            Predicate builder,
+            int size
+    );
+
+    PostResDTO.PageablePost<PostResDTO.FullPost> getMyPosts(
+            Predicate query,
+            int size
+    );
 }

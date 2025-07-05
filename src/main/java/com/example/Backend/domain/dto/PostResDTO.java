@@ -1,5 +1,6 @@
 package com.example.Backend.domain.dto;
 
+import com.example.Backend.domain.enums.PostLike;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -49,11 +50,19 @@ public class PostResDTO {
     // 자세한 게시글
     @Builder
     public record FullPost(
+            Long id,
             String title,
             String content,
             Long likeCnt,
             Long commentCnt,
             String nickname,
             LocalDateTime createdAt
+    ){}
+
+    // 게시글 좋아요
+    @Builder
+    public record LikePost(
+            Long postId,
+            PostLike isLike
     ){}
 }

@@ -4,6 +4,7 @@ import com.example.Backend.domain.dto.PostReqDTO;
 import com.example.Backend.domain.dto.PostResDTO;
 import com.example.Backend.domain.service.PostService;
 import com.example.Backend.global.apiPayload.CustomResponse;
+import com.example.Backend.global.auth.AuthUser;
 import com.example.Backend.global.validation.annotation.TagValidation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +58,48 @@ public class PostController {
     ){
         return CustomResponse.ok(postService.getPostsWithTags(tags, cursor, size));
     }
+
+    // 내가 좋아요 누른 게시글 조회
+    @GetMapping("/me/like-post")
+    @Operation(
+            summary = "내가 좋아요 누른 게시글 조회 by 김주헌",
+            description = "마이페이지에서 좋아요를 누른 게시글을 조회합니다. " +
+                    "커서 기반 페이지네이션, 최신 순으로 정렬합니다."
+    )
+    public CustomResponse<PostResDTO.PageablePost<PostResDTO.FullPost>> getLikedPosts(
+            @AuthenticationPrincipal
+            AuthUser user,
+            @RequestParam(defaultValue = "-1") @NotNull(message = "커서의 기본값은 -1입니다.")
+            @Min(value = -1, message = "커서는 -1 이상이어야 합니다.")
+            String cursor,
+            @RequestParam(defaultValue = "1") @NotNull(message = "조회할 데이터 사이즈를 요청해야 합니다.")
+            @Min(value = 1, message = "게시글은 최소 하나 이상 조회해야 합니다.")
+            int size
+    ) {
+
+        return CustomResponse.ok(postService.getMyLikePost(user, cursor, size));
+    }
+
+    // 내가 작성한 게시글 조회
+    @GetMapping("/me/posts")
+    @Operation(
+            summary = "내가 작성한 게시글 조회 (마이페이지) by 김주헌",
+            description = "마이페이지에서 내가 올렸던 게시글을 조회합니다. " +
+                    "커서 기반 페이지네이션, 최신 순으로 정렬합니다."
+    )
+    public CustomResponse<PostResDTO.PageablePost<PostResDTO.FullPost>> getMyPosts(
+            @AuthenticationPrincipal
+            AuthUser user,
+            @RequestParam(defaultValue = "-1") @NotNull(message = "커서의 기본값은 -1입니다.")
+            @Min(value = -1, message = "커서는 -1 이상이어야 합니다.")
+            String cursor,
+            @RequestParam(defaultValue = "1") @NotNull(message = "조회할 데이터 사이즈를 요청해야 합니다.")
+            @Min(value = 1, message = "게시글은 최소 하나 이상 조회해야 합니다.")
+            int size
+    ) {
+        return CustomResponse.ok(postService.getMyPosts(user, cursor, size));
+    }
+
     // POST
     // 게시글 생성
     @Operation(
@@ -64,9 +108,24 @@ public class PostController {
     )
     @PostMapping("/post")
     public CustomResponse<PostResDTO.CreatePost> createPost(
-            @RequestBody @Valid PostReqDTO.CreatePost dto
+            @RequestBody @Valid PostReqDTO.CreatePost dto,
+            @AuthenticationPrincipal AuthUser user
     ){
-        return CustomResponse.created(postService.createPost(dto));
+        return CustomResponse.created(postService.createPost(user, dto));
+    }
+
+    // 게시글 좋아요
+    @Operation(
+            summary = "게시글 좋아요 By 김주헌",
+            description = "게시글에 좋아요를 표기합니다. 재호출을 통해 좋아요 -> 좋아요 취소 할 수 있습니다."
+    )
+    @PostMapping("/post/{postId}/like")
+    public CustomResponse<PostResDTO.LikePost> likePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal AuthUser user
+    ){
+        return CustomResponse.ok(postService.LikePost(user, postId));
     }
     // DELETE
+    //
 }
