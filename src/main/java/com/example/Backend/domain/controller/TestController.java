@@ -13,6 +13,6 @@ public class TestController {
 
     @GetMapping("test")
     public CustomResponse<String> test() {
-        return CustomResponse.ok("testing!!");
+        return CustomResponse.ok("testing");
     }
 }
