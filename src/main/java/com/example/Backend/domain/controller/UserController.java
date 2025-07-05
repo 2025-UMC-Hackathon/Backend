@@ -33,20 +33,6 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-//
-//    // 로그인 페이지
-//    @GetMapping("/api/login")
-//    @Operation(summary = "로그인 페이지", description = "사용자가 로그인 페이지로 이동")
-//    public String loginPage() {
-//        return "login"; // login.html 페이지
-//    }
-//
-//    // 회원가입 페이지
-//    @GetMapping("/api/signup")
-//    @Operation(summary = "회원가입 페이지", description = "사용자가 회원가입 페이지로 이동")
-//    public String signupPage() {
-//        return "signup"; // signup.html 페이지
-//    }
 
     @Operation(
             summary = "회원가입 API By 박지영",
@@ -73,25 +59,10 @@ public class UserController {
 
     // 로그인 처리 (Spring Security 사용 시 생략 가능)
     @PostMapping("/api/login")
-    @Operation(summary = "로그인 API", description = "사용자가 로그인 요청")
-
+    @Operation(summary = "로그인 API By 박지영", description = "사용자가 입력한 이메일, 비밀번호로 로그인 요청합니다.")
     public CustomResponse<String> login(@RequestBody @Valid UserRequestDTO.LoginDTO dto) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword());
-
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-        // 2. 로그인 성공 시 SecurityContext에 인증 정보를 저장
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        // 4. 사용자 정보 가져오기
-        User user = userRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException("로그인 실패: 해당 이메일의 사용자를 찾을 수 없습니다."));
-
-        // 5. JWT 토큰 생성
-        String token = jwtTokenProvider.createToken(user.getEmail());
-
-        // 6. 토큰 응답
-        return CustomResponse.ok(token); // 또는 CustomResponse.ok("Bearer " + token);
+        String token = userService.login(dto);
+        return CustomResponse.ok(token);
     }
 
 }
