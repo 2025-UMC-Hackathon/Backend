@@ -1,5 +1,7 @@
 package com.example.Backend.global.apiPayload.exception.handler;
 
+import com.example.Backend.domain.exception.CommentException;
+import com.example.Backend.domain.exception.code.CommentErrorCode;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.apiPayload.exception.CustomException;
 import com.example.Backend.global.apiPayload.exception.code.BaseErrorCode;
@@ -7,11 +9,14 @@ import com.example.Backend.global.apiPayload.exception.code.GeneralErrorCode;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -133,4 +138,34 @@ public class GlobalExceptionHandler {
                 .status(errorCode.getHttpStatus())
                 .body(errorResponse);
     }
+
+    // JSON 파싱 실패 시 UTF-8 인코딩 오류와 형식 오류를 구분하여 처리
+
+    //JSON 파싱 중 타입 오류 발생 시
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<CustomResponse<String>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("[BAD REQUEST] JSON 파싱 에러: {}", ex.getMessage());
+        CommentErrorCode errorCode = CommentErrorCode.INVALID_JSON_FORMAT;
+
+        CustomResponse<String> errorResponse = CustomResponse.onFailure(
+                errorCode,
+                null
+        );
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<CustomResponse<String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.warn("[BAD REQUEST] 잘못된 타입 입력: {}", ex.getMessage());
+        CommentErrorCode errorCode = CommentErrorCode.INVALID_TYPE;
+
+        CustomResponse<String> errorResponse = CustomResponse.onFailure(
+                errorCode,
+                null
+        );
+
+        return ResponseEntity.status(errorCode.getHttpStatus()).body(errorResponse);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.example.Backend.domain.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,10 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    @Operation(summary = "댓글 등록", description = "일반 댓글 또는 대댓글을 저장합니다.")
-    public ResponseEntity<String> uploadComment(@RequestBody CommentRequestDto requestDto) {
+    @Operation(summary = "댓글 등록", description = "일반 댓글 또는 대댓글을 저장합니다. 일반 댓글일 경우 parentId를 보내지 않고 대댓글일 경우에 paentId를 포함하여 요청을 보냅니다.")
+    public ResponseEntity<String> uploadComment(
+            @RequestBody @Validated CommentRequestDto requestDto
+    ) {
         commentService.uploadComment(requestDto);
         return ResponseEntity.ok("댓글이 등록되었습니다.");
     }
