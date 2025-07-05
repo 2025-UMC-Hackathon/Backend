@@ -1,6 +1,5 @@
 package com.example.Backend.domain.service;
 
-import com.example.Backend.domain.dto.CommentRequestDto;
 import com.example.Backend.domain.dto.CommentResponseDto;
 import com.example.Backend.domain.entity.Comment;
 import com.example.Backend.domain.entity.Post;
@@ -10,6 +9,7 @@ import com.example.Backend.domain.exception.code.CommentErrorCode;
 import com.example.Backend.domain.repository.CommentRepository;
 import com.example.Backend.domain.repository.PostRepository;
 import com.example.Backend.domain.repository.UserRepository;
+import com.example.Backend.global.auth.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,28 +34,35 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void uploadComment(CommentRequestDto requestDto) {
+    public void uploadComment(
+            Long postId,
+            Long parentId,
+            AuthUser authUser,
+            String content
+    ) {
 
-        if (requestDto.getContent() == null || requestDto.getContent().trim().isEmpty()) {
+        // 유저 정보 조회
+        User user = userRepository.findById(authUser.getUserId()).orElseThrow(() ->
+                new CommentException(CommentErrorCode.USER_NOT_FOUND));
+
+        if (content == null) {
             throw new CommentException(CommentErrorCode.EMPTY_CONTENT);
         }
 
-        Post post = postRepository.findById(requestDto.getPostId())
+        Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new CommentException(NOT_FOUND));
 
-        User user = userRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new CommentException(USER_NOT_FOUND));
-
         Comment parent = null;
-        if (requestDto.getParentId() != null) {
-            parent = commentRepository.findById(requestDto.getParentId())
+        if (parentId != null) {
+            parent = commentRepository.findById(parentId)
                     .orElseThrow(() -> new CommentException(PARENT_COMMENT_NOT_FOUND));
         }
 
+        //converter!!
         Comment comment = Comment.builder()
                 .post(post)
                 .user(user)
-                .content(requestDto.getContent())
+                .content(content)
                 .parent(parent)
                 .build();
 
