@@ -175,4 +175,25 @@ public class PostService {
 
         return postRepository.getMyLikePost(builder, size);
     }
+
+    public PostResDTO.PageablePost<PostResDTO.FullPost> getMyPosts(
+            AuthUser user,
+            String cursor,
+            int size
+    ) {
+
+        BooleanBuilder builder = new BooleanBuilder();
+        QPost post = QPost.post;
+
+        builder.and(post.user.id.eq(user.getUserId()));
+        if (!cursor.equals("-1")) {
+            try {
+                builder.and(post.id.loe(Long.parseLong(cursor)));
+            } catch (NumberFormatException e){
+                throw new PostException(PostErrorCode.NOT_VALID_CURSOR);
+            }
+        }
+
+        return postRepository.getMyPosts(builder, size);
+    }
 }

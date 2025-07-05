@@ -2,7 +2,10 @@ package com.example.Backend.domain.repository;
 
 import com.example.Backend.domain.converter.PostConverter;
 import com.example.Backend.domain.dto.PostResDTO;
-import com.example.Backend.domain.entity.*;
+import com.example.Backend.domain.entity.QComment;
+import com.example.Backend.domain.entity.QPost;
+import com.example.Backend.domain.entity.QPostTag;
+import com.example.Backend.domain.entity.QUserLike;
 import com.example.Backend.domain.exception.PostException;
 import com.example.Backend.domain.exception.code.PostErrorCode;
 import com.querydsl.core.group.GroupBy;
@@ -78,6 +81,52 @@ public class PostQueryDslImpl implements PostQueryDsl {
         List<PostResDTO.FullPost> fullPostList = queryFactory
                 .from(post)
                 .leftJoin(userLike).on(userLike.post.id.eq(post.id))
+                .leftJoin(comment).on(comment.post.id.eq(post.id))
+                .where(query)
+                .orderBy(post.id.desc())
+                .groupBy(post.id)
+                .transform(GroupBy.groupBy(post.id).list(
+                        Projections.constructor(
+                                PostResDTO.FullPost.class,
+                                post.id,
+                                post.title,
+                                post.content,
+                                post.likeCnt,
+                                comment.count(),
+                                post.user.nickname,
+                                post.createdAt
+                        )
+                ));
+
+        // 결과가 존재하지 않을때
+        if (fullPostList.isEmpty()) {
+            throw new PostException(PostErrorCode.NOT_FOUND);
+        }
+
+        // 메타데이터 생성
+        int pageSize = Math.min(fullPostList.size(), size);
+        String nextCursor = fullPostList.size() > size ?
+                fullPostList.get(pageSize).id().toString() : fullPostList.get(pageSize-1).id().toString();
+
+        // 게시글 size 조절
+        fullPostList = fullPostList.subList(0, pageSize);
+
+        return PostConverter.toPageablePostDTO(fullPostList, nextCursor, pageSize);
+    }
+
+    // 내가 작성한 게시글 조회
+    @Override
+    public PostResDTO.PageablePost<PostResDTO.FullPost> getMyPosts(
+            Predicate query,
+            int size
+    ) {
+        // 조회할 객체 선언
+        QPost post = QPost.post;
+        QComment comment = QComment.comment;
+
+        // 세부정보 조회
+        List<PostResDTO.FullPost> fullPostList = queryFactory
+                .from(post)
                 .leftJoin(comment).on(comment.post.id.eq(post.id))
                 .where(query)
                 .orderBy(post.id.desc())

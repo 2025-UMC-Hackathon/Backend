@@ -79,6 +79,27 @@ public class PostController {
 
         return CustomResponse.ok(postService.getMyLikePost(user, cursor, size));
     }
+
+    // 내가 작성한 게시글 조회
+    @GetMapping("/me/posts")
+    @Operation(
+            summary = "내가 작성한 게시글 조회 (마이페이지) by 김주헌",
+            description = "마이페이지에서 내가 올렸던 게시글을 조회합니다. " +
+                    "커서 기반 페이지네이션, 최신 순으로 정렬합니다."
+    )
+    public CustomResponse<PostResDTO.PageablePost<PostResDTO.FullPost>> getMyPosts(
+            @AuthenticationPrincipal
+            AuthUser user,
+            @RequestParam(defaultValue = "-1") @NotNull(message = "커서의 기본값은 -1입니다.")
+            @Min(value = -1, message = "커서는 -1 이상이어야 합니다.")
+            String cursor,
+            @RequestParam(defaultValue = "1") @NotNull(message = "조회할 데이터 사이즈를 요청해야 합니다.")
+            @Min(value = 1, message = "게시글은 최소 하나 이상 조회해야 합니다.")
+            int size
+    ) {
+        return CustomResponse.ok(postService.getMyPosts(user, cursor, size));
+    }
+
     // POST
     // 게시글 생성
     @Operation(
