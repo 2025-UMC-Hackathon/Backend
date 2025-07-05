@@ -3,6 +3,7 @@ package com.example.Backend.domain.service;
 
 import com.example.Backend.domain.entity.User;
 import com.example.Backend.domain.repository.UserRepository;
+import com.example.Backend.global.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,9 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = memberRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 이메일을 가진 유저가 존재하지 않습니다: " + username));
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPwd()) // 암호화된 비밀번호 필드
-                .build();
+        return new CustomUserDetails(user);
     }
 }

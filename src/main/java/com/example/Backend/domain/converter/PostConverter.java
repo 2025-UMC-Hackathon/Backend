@@ -4,6 +4,7 @@ import com.example.Backend.domain.dto.PostReqDTO;
 import com.example.Backend.domain.dto.PostResDTO;
 import com.example.Backend.domain.entity.Post;
 import com.example.Backend.domain.entity.User;
+import com.example.Backend.domain.entity.UserLike;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,6 +59,16 @@ public class PostConverter {
                 .posts(post)
                 .cursor(cursor)
                 .pageSize(pageSize)
+                .build();
+    }
+
+    // 게시글 좋아요
+    public static PostResDTO.LikePost toLikePost(
+            UserLike userLike
+    ){
+        return PostResDTO.LikePost.builder()
+                .postId(userLike.getPost().getId())
+                .isLike(userLike.getIsLike())
                 .build();
     }
 }

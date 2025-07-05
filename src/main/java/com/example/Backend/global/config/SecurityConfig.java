@@ -1,5 +1,6 @@
 package com.example.Backend.global.config;
 
+import com.example.Backend.domain.service.CustomUserDetailsService;
 import com.example.Backend.global.jwt.JwtAuthenticationFilter;
 import com.example.Backend.global.jwt.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +24,7 @@ public class SecurityConfig {
             "/api/login",
     };
     @Bean
-    public SecurityFilterChain SecurityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
+    public SecurityFilterChain SecurityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // 🔸 React 등과 연동 시 csrf 비활성화
 
@@ -34,7 +35,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable()) // 🔸 Basic 인증 비활성화
                 .formLogin(form -> form.disable()) // 🔸 Form 로그인 비활성화
                 .logout(logout -> logout.disable()) // 🔸 필요 시 logout도 직접 처리
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

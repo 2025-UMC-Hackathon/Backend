@@ -42,4 +42,9 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    // update
+    public void updateLikeCount(Long likeCount) {
+        this.likeCnt = likeCount;
+    }
 }

@@ -4,6 +4,7 @@ import com.example.Backend.domain.dto.PostReqDTO;
 import com.example.Backend.domain.dto.PostResDTO;
 import com.example.Backend.domain.service.PostService;
 import com.example.Backend.global.apiPayload.CustomResponse;
+import com.example.Backend.global.auth.AuthUser;
 import com.example.Backend.global.validation.annotation.TagValidation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,9 +66,23 @@ public class PostController {
     )
     @PostMapping("/post")
     public CustomResponse<PostResDTO.CreatePost> createPost(
-            @RequestBody @Valid PostReqDTO.CreatePost dto
+            @RequestBody @Valid PostReqDTO.CreatePost dto,
+            @AuthenticationPrincipal AuthUser user
     ){
-        return CustomResponse.created(postService.createPost(dto));
+        return CustomResponse.created(postService.createPost(user, dto));
+    }
+
+    // 게시글 좋아요
+    @Operation(
+            summary = "게시글 좋아요 By 김주헌",
+            description = "게시글에 좋아요를 표기합니다."
+    )
+    @PostMapping("/post/{postId}/like")
+    public CustomResponse<PostResDTO.LikePost> likePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal AuthUser user
+    ){
+        return CustomResponse.ok(postService.LikePost(user, postId));
     }
     // DELETE
 }
