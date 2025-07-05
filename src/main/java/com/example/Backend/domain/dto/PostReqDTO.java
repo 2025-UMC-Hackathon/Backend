@@ -1,6 +1,7 @@
 package com.example.Backend.domain.dto;
 
 import com.example.Backend.global.validation.annotation.TagValidation;
+import com.example.Backend.global.validation.annotation.TypeValid;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.List;
@@ -13,8 +14,11 @@ public class PostReqDTO {
             String title,
             @NotEmpty(message = "내용은 필수로 입력해야 합니다.")
             String content,
+            @TypeValid
+            @NotEmpty(message = "장애유형은 필수로 입력해야 합니다.")
+            List<String> types,
             @TagValidation
-            @NotEmpty(message = "태그는 필수로 입력해야 합니다.")
+            @NotEmpty(message = "고민은 필수로 입력해야 합니다.")
             List<String> tags
     ){}
 

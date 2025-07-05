@@ -6,10 +6,10 @@ import com.example.Backend.domain.service.PostService;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.auth.AuthUser;
 import com.example.Backend.global.validation.annotation.TagValidation;
+import com.example.Backend.global.validation.annotation.TypeValid;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,8 +47,10 @@ public class PostController {
     )
     @GetMapping("/posts")
     public CustomResponse<PostResDTO.PageablePost<PostResDTO.SimplePost>> getPostsWithTags(
-            @RequestParam(required = false) @TagValidation @Valid @NotEmpty(message = "검색할 태그는 필수 입력입니다.")
+            @RequestParam(required = false) @TagValidation @Valid
             List<String> tags,
+            @RequestParam(required = false) @TypeValid @Valid
+            List<String> types,
             @RequestParam(defaultValue = "-1") @NotNull(message = "커서의 기본값은 -1입니다.")
             @Min(value = -1, message = "커서는 -1 이상이어야 합니다.")
             String cursor,
@@ -56,7 +58,7 @@ public class PostController {
             @Min(value = 1, message = "게시글은 최소 하나 이상 조회해야 합니다.")
             int size
     ){
-        return CustomResponse.ok(postService.getPostsWithTags(tags, cursor, size));
+        return CustomResponse.ok(postService.getPostsWithTags(tags, types, cursor, size));
     }
 
     // 내가 좋아요 누른 게시글 조회

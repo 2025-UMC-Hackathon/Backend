@@ -22,12 +22,12 @@ public class SecurityConfig {
             "/v3/api-docs/**",
             "/api/signup",
             "/api/login",
+            "/healthcheck",
     };
     @Bean
     public SecurityFilterChain SecurityFilterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // 🔸 React 등과 연동 시 csrf 비활성화
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(allowedUrls).permitAll()
                         .anyRequest().authenticated()
