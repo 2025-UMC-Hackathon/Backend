@@ -23,8 +23,8 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @Column(name = "like")
-    private Long like;
+    @Column(name = "likeCnt")
+    private Long likeCnt;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
