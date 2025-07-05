@@ -61,7 +61,9 @@ public class UserController {
     )
 
    @PostMapping("/api/signup")
-    public CustomResponse<String> signUp(@RequestBody @Valid UserRequestDTO.JoinDTO dto) {
+    public CustomResponse<String> signUp(
+            @RequestBody UserRequestDTO.JoinDTO dto
+    ) {
         // 1. 회원가입 처리
         User user = userService.joinMember(dto);
 

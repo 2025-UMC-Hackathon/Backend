@@ -77,7 +77,7 @@ public class PostService {
         // 게시글 저장
 //        Post post = postRepository.save(PostConverter.toPost(dto, user));
         // 임시
-        User user = userRepository.findUserById(1L);
+        User user = userRepository.findUserById((1L));
         Post post = postRepository.save(PostConverter.toPost(dto, user));
 
         // 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
