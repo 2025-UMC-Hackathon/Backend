@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table
+@Table(name = "chat_message")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
