@@ -125,7 +125,9 @@ public class PostService {
         // 게시글 저장
         Post post = postRepository.save(PostConverter.toPost(dto, user));
 
-        // 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
+        LocalDateTime now = LocalDateTime.now();
+
+        // 고민 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
         List<Tag> foundTags = tagRepository.findByContentIn(dto.tags());
         Map<String, Tag> tagMap = foundTags.stream()
                 .collect(Collectors.toMap(Tag::getContent, Function.identity()));
@@ -146,8 +148,28 @@ public class PostService {
         }
         postTagRepository.saveAll(postTags);
 
+        // 유형 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
+        List<Tag> foundTypes = tagRepository.findByContentIn(dto.tags());
+        Map<String, Tag> typeMap = foundTypes.stream()
+                .collect(Collectors.toMap(Tag::getContent, Function.identity()));
+
+        List<Tag> types = new ArrayList<>();
+        for (String tagName : dto.tags()) {
+            Tag tag = typeMap.get(tagName);
+            if (tag == null) {
+                tag = tagRepository.save(TagConverter.toTag(tagName));
+            }
+            types.add(tag);
+        }
+
+        // 게시글 <-> 태그 연동
+        List<PostTag> postTypes = new ArrayList<>();
+        for (Tag tag : types) {
+            postTypes.add(PostTagConverter.toPostTag(post, tag));
+        }
+        postTagRepository.saveAll(postTypes);
+
         // 리턴
-        LocalDateTime now = LocalDateTime.now();
         return PostConverter.toCreatePostDTO(post, now);
     }
 
