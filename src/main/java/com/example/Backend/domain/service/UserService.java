@@ -1,11 +1,8 @@
 package com.example.Backend.domain.service;
 
 import com.example.Backend.domain.converter.UserConverter;
-import com.example.Backend.domain.dto.UserRequestDTO;
+import com.example.Backend.domain.dto.request.UserRequestDTO;
 import com.example.Backend.domain.entity.User;
-import com.example.Backend.domain.enums.DisabilityLevel;
-import com.example.Backend.domain.enums.DisabilityType;
-import com.example.Backend.domain.enums.UserType;
 import com.example.Backend.domain.exception.UserException;
 import com.example.Backend.domain.exception.code.UserErrorCode;
 import com.example.Backend.domain.repository.UserRepository;
@@ -13,7 +10,6 @@ import com.example.Backend.global.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

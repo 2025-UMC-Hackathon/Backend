@@ -1,6 +1,6 @@
 package com.example.Backend.domain.service;
 
-import com.example.Backend.domain.dto.ChatResponseDto;
+import com.example.Backend.domain.dto.response.ChatResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

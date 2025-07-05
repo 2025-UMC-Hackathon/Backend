@@ -1,7 +1,7 @@
 package com.example.Backend.domain.controller;
 
-import com.example.Backend.domain.dto.ChatRequestDto;
-import com.example.Backend.domain.dto.ChatResponseDto;
+import com.example.Backend.domain.dto.request.ChatRequestDto;
+import com.example.Backend.domain.dto.response.ChatResponseDto;
 import com.example.Backend.domain.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -4,8 +4,8 @@ import com.example.Backend.domain.converter.PostConverter;
 import com.example.Backend.domain.converter.PostTagConverter;
 import com.example.Backend.domain.converter.TagConverter;
 import com.example.Backend.domain.converter.UserLikeConverter;
-import com.example.Backend.domain.dto.PostReqDTO;
-import com.example.Backend.domain.dto.PostResDTO;
+import com.example.Backend.domain.dto.request.PostReqDTO;
+import com.example.Backend.domain.dto.response.PostResDTO;
 import com.example.Backend.domain.entity.*;
 import com.example.Backend.domain.enums.PostLike;
 import com.example.Backend.domain.exception.PostException;
@@ -138,12 +138,13 @@ public class PostService {
         LocalDateTime now = LocalDateTime.now();
 
         // 고민 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
-        List<Tag> foundTags = tagRepository.findByContentIn(dto.tags());
+        List<Tag> foundTags = tagRepository.findByContentIn(dto.tags().stream().distinct().toList());
         Map<String, Tag> tagMap = foundTags.stream()
+                .distinct()
                 .collect(Collectors.toMap(Tag::getContent, Function.identity()));
 
         List<Tag> tags = new ArrayList<>();
-        for (String tagName : dto.tags()) {
+        for (String tagName : dto.tags().stream().distinct().toList()) {
             Tag tag = tagMap.get(tagName);
             if (tag == null) {
                 tag = tagRepository.save(TagConverter.toTag(tagName));
@@ -159,12 +160,13 @@ public class PostService {
         postTagRepository.saveAll(postTags);
 
         // 유형 태그 생성 : 기존 태그 불러오기 + 없는 태그 저장하기
-        List<Tag> foundTypes = tagRepository.findByContentIn(dto.types());
+        List<Tag> foundTypes = tagRepository.findByContentIn(dto.types().stream().distinct().toList());
         Map<String, Tag> typeMap = foundTypes.stream()
+                .distinct()
                 .collect(Collectors.toMap(Tag::getContent, Function.identity()));
 
         List<Tag> types = new ArrayList<>();
-        for (String typeName : dto.types()) {
+        for (String typeName : dto.types().stream().distinct().toList()) {
             Tag type = typeMap.get(typeName);
             if (type == null) {
                 type = tagRepository.save(TagConverter.toTag(typeName));

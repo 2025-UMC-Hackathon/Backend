@@ -1,6 +1,6 @@
 package com.example.Backend.domain.repository;
 
-import com.example.Backend.domain.dto.PostResDTO;
+import com.example.Backend.domain.dto.response.PostResDTO;
 import com.querydsl.core.types.Predicate;
 
 public interface PostQueryDsl {

@@ -1,4 +1,4 @@
-package com.example.Backend.domain.dto;
+package com.example.Backend.domain.dto.response;
 
 import com.example.Backend.domain.enums.PostLike;
 import lombok.Builder;

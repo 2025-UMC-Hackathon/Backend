@@ -1,7 +1,7 @@
 package com.example.Backend.domain.controller;
 
-import com.example.Backend.domain.dto.PostReqDTO;
-import com.example.Backend.domain.dto.PostResDTO;
+import com.example.Backend.domain.dto.request.PostReqDTO;
+import com.example.Backend.domain.dto.response.PostResDTO;
 import com.example.Backend.domain.service.PostService;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.auth.AuthUser;

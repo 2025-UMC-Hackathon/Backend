@@ -1,4 +1,4 @@
-package com.example.Backend.domain.dto;
+package com.example.Backend.domain.dto.request;
 
 import lombok.Data;
 

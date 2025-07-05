@@ -1,7 +1,7 @@
 package com.example.Backend.domain.converter;
 
-import com.example.Backend.domain.dto.PostReqDTO;
-import com.example.Backend.domain.dto.PostResDTO;
+import com.example.Backend.domain.dto.request.PostReqDTO;
+import com.example.Backend.domain.dto.response.PostResDTO;
 import com.example.Backend.domain.entity.Post;
 import com.example.Backend.domain.entity.User;
 import com.example.Backend.domain.entity.UserLike;

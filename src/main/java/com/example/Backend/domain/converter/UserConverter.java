@@ -1,10 +1,8 @@
 package com.example.Backend.domain.converter;
 
-import com.example.Backend.domain.dto.UserResponseDTO;
+import com.example.Backend.domain.dto.response.UserResponseDTO;
 import com.example.Backend.domain.entity.User;
-import com.example.Backend.domain.dto.UserRequestDTO;
-
-import java.time.LocalDateTime;
+import com.example.Backend.domain.dto.request.UserRequestDTO;
 
 public class UserConverter {
     // 회원가입 응답용 DTO

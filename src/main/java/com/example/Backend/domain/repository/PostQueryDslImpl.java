@@ -1,7 +1,7 @@
 package com.example.Backend.domain.repository;
 
 import com.example.Backend.domain.converter.PostConverter;
-import com.example.Backend.domain.dto.PostResDTO;
+import com.example.Backend.domain.dto.response.PostResDTO;
 import com.example.Backend.domain.entity.QComment;
 import com.example.Backend.domain.entity.QPost;
 import com.example.Backend.domain.entity.QPostTag;

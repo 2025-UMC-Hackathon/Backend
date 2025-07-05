@@ -1,4 +1,4 @@
-package com.example.Backend.domain.dto;
+package com.example.Backend.domain.dto.request;
 
 import com.example.Backend.domain.enums.DisabilityLevel;
 import com.example.Backend.domain.enums.DisabilityType;

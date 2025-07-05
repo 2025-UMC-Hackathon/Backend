@@ -1,6 +1,6 @@
 package com.example.Backend.domain.controller;
 
-import com.example.Backend.domain.dto.CommentResponseDto;
+import com.example.Backend.domain.dto.response.CommentResponseDto;
 import com.example.Backend.domain.service.CommentService;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.auth.AuthUser;

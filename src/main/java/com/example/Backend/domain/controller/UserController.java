@@ -1,25 +1,16 @@
 package com.example.Backend.domain.controller;
 
-import ch.qos.logback.core.status.ErrorStatus;
-import com.example.Backend.domain.dto.UserRequestDTO;
+import com.example.Backend.domain.dto.request.UserRequestDTO;
 
-import com.example.Backend.domain.dto.UserResponseDTO;
 import com.example.Backend.domain.entity.User;
 import com.example.Backend.domain.repository.UserRepository;
 import com.example.Backend.domain.service.UserService;
 import com.example.Backend.global.apiPayload.CustomResponse;
 import com.example.Backend.global.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.models.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

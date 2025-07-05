@@ -1,6 +1,6 @@
 package com.example.Backend.domain.service;
 
-import com.example.Backend.domain.dto.CommentResponseDto;
+import com.example.Backend.domain.dto.response.CommentResponseDto;
 import com.example.Backend.domain.entity.Comment;
 import com.example.Backend.domain.entity.Post;
 import com.example.Backend.domain.entity.User;
@@ -23,7 +23,6 @@ import java.util.Map;
 
 import static com.example.Backend.domain.exception.code.CommentErrorCode.PARENT_COMMENT_NOT_FOUND;
 import static com.example.Backend.domain.exception.code.PostErrorCode.NOT_FOUND;
-import static com.example.Backend.domain.exception.code.PostErrorCode.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor

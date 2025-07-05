@@ -1,4 +1,4 @@
-package com.example.Backend.domain.dto;
+package com.example.Backend.domain.dto.request;
 
 import com.example.Backend.global.validation.annotation.TagValidation;
 import com.example.Backend.global.validation.annotation.TypeValid;
