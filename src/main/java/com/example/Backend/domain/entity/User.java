@@ -47,4 +47,8 @@ public class User {
     @Column(name = "disability_level")
     private DisabilityLevel disabilityLevel;
 
+    public void encodePassword(String pwd) {
+        this.pwd = pwd;
+    }
+
 }
