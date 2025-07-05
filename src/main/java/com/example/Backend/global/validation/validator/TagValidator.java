@@ -19,6 +19,9 @@ public class TagValidator implements ConstraintValidator<TagValidation, List<Str
             List<String> object,
             ConstraintValidatorContext constraintValidatorContext
     ) {
+        if (object == null) {
+            return true;
+        }
         return object.stream().allMatch(s ->
                 Arrays.stream(TagCategory.values())
                         .anyMatch(t -> t.name().equals(s)));

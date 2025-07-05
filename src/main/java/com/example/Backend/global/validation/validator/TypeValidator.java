@@ -19,6 +19,9 @@ public class TypeValidator implements ConstraintValidator<TypeValid, List<String
             List<String> object,
             ConstraintValidatorContext constraintValidatorContext
     ) {
+        if (object == null) {
+            return true;
+        }
         return object.stream().allMatch(s ->
                 Arrays.stream(TypeCategory.values())
                         .anyMatch(t -> t.name().equals(s)));
