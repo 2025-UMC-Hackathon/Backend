@@ -37,7 +37,9 @@ public enum CommentErrorCode implements BaseErrorCode {
 
     INVALID_TYPE(HttpStatus.BAD_REQUEST,
             "COMMENT400_3", "잘못된 요청 타입입니다."),
-    ;
+
+    PARENT_POST_NOT_MATCH(HttpStatus.BAD_REQUEST,
+            "COMMENT400_3","부모 댓글의 게시글과 현재 댓글의 게시글이 일치하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

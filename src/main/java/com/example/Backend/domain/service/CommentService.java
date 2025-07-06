@@ -55,6 +55,10 @@ public class CommentService {
         if (parentId != null) {
             parent = commentRepository.findById(parentId)
                     .orElseThrow(() -> new CommentException(PARENT_COMMENT_NOT_FOUND));
+            //부모 댓글의 postId와 현재 댓글의 postId가 다른 경우 예외 처리
+            if (!parent.getPost().getId().equals(post.getId())) {
+                throw new CommentException(CommentErrorCode.PARENT_POST_NOT_MATCH);
+            }
         }
 
         //converter!!
