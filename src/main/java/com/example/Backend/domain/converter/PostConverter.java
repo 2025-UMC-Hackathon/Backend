@@ -56,4 +56,15 @@ public class PostConverter {
                 .isLike(userLike.getIsLike())
                 .build();
     }
+
+    // 게시글 삭제
+    public static PostResDTO.DeletePost toDeletePost(
+            Long postId,
+            LocalDateTime now
+    ){
+        return PostResDTO.DeletePost.builder()
+                .postId(postId)
+                .deletedAt(now)
+                .build();
+    }
 }

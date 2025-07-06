@@ -121,7 +121,7 @@ public class PostController {
             summary = "게시글 좋아요 By 김주헌",
             description = "게시글에 좋아요를 표기합니다. 재호출을 통해 좋아요 -> 좋아요 취소 할 수 있습니다."
     )
-    @PostMapping("/post/{postId}/like")
+    @PostMapping("/posts/{postId}/like")
     public CustomResponse<PostResDTO.LikePost> likePost(
             @PathVariable Long postId,
             @AuthenticationPrincipal AuthUser user
@@ -129,5 +129,17 @@ public class PostController {
         return CustomResponse.ok(postService.LikePost(user, postId));
     }
     // DELETE
-    //
+    // 게시글 삭제
+    @Operation(
+            summary = "게시글 삭제 By 김주헌",
+            description = "게시글을 삭제합니다. (Hard Delete)"
+    )
+    @DeleteMapping("/posts/{postId}")
+    public CustomResponse<PostResDTO.DeletePost> deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal AuthUser user
+    ){
+        return CustomResponse.ok(postService.deletePost(postId, user));
+    }
+
 }

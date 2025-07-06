@@ -64,4 +64,11 @@ public class PostResDTO {
             Long postId,
             PostLike isLike
     ){}
+
+    // 게시글 삭제
+    @Builder
+    public record DeletePost(
+            Long postId,
+            LocalDateTime deletedAt
+    ){}
 }

@@ -210,6 +210,7 @@ public class PostService {
         return postRepository.getMyLikePost(builder, size);
     }
 
+    // 내가 작성한 게시글 조회
     public PostResDTO.PageablePost<PostResDTO.FullPost> getMyPosts(
             AuthUser user,
             String cursor,
@@ -229,5 +230,27 @@ public class PostService {
         }
 
         return postRepository.getMyPosts(builder, size);
+    }
+
+    // 게시글 삭제
+    public PostResDTO.DeletePost deletePost(
+            Long postId,
+            AuthUser authUser
+    ){
+
+        // 게시글 존재 여부 확인
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new PostException(PostErrorCode.NOT_FOUND));
+
+        // 작성자인지 확인
+        if (!post.getUser().getId().equals(authUser.getUserId())) {
+            throw new PostException(PostErrorCode.USER_NOT_MATCH);
+        }
+
+        // 삭제: 게시글 -> 게시글 태그
+        postRepository.delete(post);
+
+        LocalDateTime now = LocalDateTime.now();
+        return PostConverter.toDeletePost(postId, now);
     }
 }
