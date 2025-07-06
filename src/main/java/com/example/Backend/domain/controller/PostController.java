@@ -43,7 +43,7 @@ public class PostController {
     @Operation(
             summary = "태그와 관련된 게시글 모두 조회 By 김주헌",
             description = "태그와 관련된 게시글을 모두 조회합니다." +
-                    " 오프셋 페이지네이션으로, 검색할 태그들과 현재 페이지(오프셋), 불러올 게시글 수(페이지 사이즈)를 정해주세요."
+                    " 커서기반 페이지네이션으로, tags => 고민 관련 태그, types => 장애유형 관련 태그, 커서, 불러올 게시글 수(페이지 사이즈)를 정해주세요."
     )
     @GetMapping("/posts")
     public CustomResponse<PostResDTO.PageablePost<PostResDTO.SimplePost>> getPostsWithTags(
